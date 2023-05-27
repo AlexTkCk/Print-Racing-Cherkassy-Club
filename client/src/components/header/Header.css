@@ -1,0 +1,19 @@
+.header {
+    padding: 2% 2%;
+    height: fit-content;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    width: 100%;
+    display: flex;
+    border: 1px solid black;
+    align-items: center;
+    background: black;
+}
+
+.header__title {
+    border: 1px solid gray;
+    font-size: 45px;
+    -webkit-text-stroke: 1px white;
+    padding: 5px 10px;
+    box-shadow: 1px 1px 1px white;
+}
