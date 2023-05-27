@@ -14,6 +14,21 @@
     border: 1px solid gray;
     font-size: 45px;
     -webkit-text-stroke: 1px white;
-    padding: 5px 10px;
+    padding: 5px 20px;
     box-shadow: 1px 1px 1px white;
+    position: relative;
+}
+
+.header__title_cursor {
+    position: absolute;
+    content: '';
+    height: 85%;
+    width: 2px;
+    background: white;
+    left: 155px;
+    display: none;
+}
+
+.header__title_cursor.active {
+    display: block;
 }
