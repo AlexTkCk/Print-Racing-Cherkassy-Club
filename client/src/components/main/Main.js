@@ -11,6 +11,7 @@ const Main = ({inGame, logInGameHandler}) => {
     return inGame ?
         (
             <main className={'main'}>
+                <div className="main__car_display"></div>
                 <div className="main__random_text_container">
                     {rndText}
                     <div className="main__users_input_container">
