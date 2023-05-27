@@ -1,19 +1,23 @@
 .main {
     display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
-    justify-content: center;
     height: 100%;
 }
 
 .main__random_text_container {
-    height: 50%;
-    width: 50%;
+    height: fit-content;
+    width: 70%;
     border: 1px solid black;
-    position: absolute;
-    font-size: 60px;
-    word-wrap: break-word;
-    text-wrap: normal;
-    overflow-y: scroll;
+    font-size: 70px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding: 5px 10px;
+    background: #000000;
+    -webkit-text-stroke: 1px #ffffff;
+    color: transparent;
+    position: relative;
 }
 
 .main__textarea_hidden {
