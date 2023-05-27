@@ -6,7 +6,7 @@ import {useState} from "react";
 
 function App() {
 
-    const [inGame, setInGame] = useState(false);
+    const [inGame, setInGame] = useState(true);
 
     const logInGameHandler = () => {
         setInGame((prevState) => !prevState)
