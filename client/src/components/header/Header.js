@@ -1,28 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import './Header.css'
+import Typewriter from "typewriter-effect";
 
 const Header = ({}) => {
-
-    const [titleContent, setTitleContent] = useState('Print');
-    const [titleCursorClass, setTitleCursorClass] = useState('');
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTitleCursorClass(prevState => prevState === 'active' ? '' : 'active');
-        }, 500);
-
-        return () => {
-            clearInterval(interval);
-        }
-    });
-
 
     return (
         <header className={'header'}>
             <h1 className={'header__title'}>
-                <div className={`header__title_cursor ${titleCursorClass}`}>
-                </div>
-                {titleContent}
+                Print
+                <Typewriter
+                options={{
+                    strings: ['racing'],
+                    autoStart: true,
+                    loop: true,
+                    pauseFor: 100,
+                }}
+                />
             </h1>
         </header>
     );
