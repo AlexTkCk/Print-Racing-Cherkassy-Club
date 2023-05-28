@@ -1,10 +1,22 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import randomWords from 'random-words';
 import './Main.css'
+import { io } from 'socket.io-client';
 
 const rndText = randomWords(100).join(' ');
-
 const Main = ({inGame, logInGameHandler}) => {
+
+    useEffect(() => {
+        const socket = io('ws://localhost:5000');
+
+        socket.on('client_connected', (data) => {
+            console.log(data)
+        })
+
+        return (() => {
+            socket.disconnect()
+        })
+    }, [])
 
     const [usersInput, setUsersInput] = useState('');
 
