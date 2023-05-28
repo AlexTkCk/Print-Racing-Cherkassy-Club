@@ -39,3 +39,27 @@
     font-size: 70px;
     padding: 5px 10px;
 }
+
+.popUp {
+    border: 1px solid darkblue;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 5px;
+    transition: 0.3s ease-in;
+    opacity: 0;
+}
+
+.popUp__title {
+    margin-block: 20px;
+}
+
+.popUp_active {
+    opacity: 100;
+}
