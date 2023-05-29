@@ -18,7 +18,7 @@
     position: relative;
     font-size: 45px;
     display: flex;
-    width: 335px;
+    width: fit-content;
 }
 
 .Typewriter {
