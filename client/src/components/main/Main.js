@@ -76,7 +76,7 @@ const Main = ({inGame, logInGameHandler}) => {
                         <div className={'title__description_hover'}>
                             <div className="ID_description__container">
                                 <p className="description_container__text">
-                                    This ID should be user by other people to start game with you.
+                                    This ID should be used by other people to start game with you.
                                 </p>
                             </div>
                             ID
