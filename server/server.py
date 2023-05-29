@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import openai
 
-openai.api_key = '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'
+openai.api_key = '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'
 
 def generate_random_text():
     prompt = "Once upon a time"
