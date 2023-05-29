@@ -11,7 +11,7 @@ def generate_random_text():
     return generated_text
 
 
-app = Flask(name)
+app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 connected_clients = set()
@@ -33,5 +33,5 @@ def handle_get_random_text():
     random_text = generate_random_text()
     emit('random_text_generated', {'text': ' '.join(random_text)})
 
-if name == 'main':
+if __name__ == '__main__':
     socketio.run(app, port=5000)
