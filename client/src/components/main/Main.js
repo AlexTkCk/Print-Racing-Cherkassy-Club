@@ -1,16 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import randomWords from 'random-words';
 import './Main.css'
 import { io } from 'socket.io-client';
 
-const rndText = randomWords(100).join(' ');
 const Main = ({inGame, logInGameHandler}) => {
 
     const [popUpVisible, setPopUpVisible] = useState('');
     const [popUpText, setPopUpText] = useState('');
     const [currentUserId, setCurrentUserId] = useState('You will appear here');
-    const [randomText, setRandomText] = useState('');
     const [inputActive, setInputActive] = useState('');
+    const [rndText, setRndText] = useState('Text soon');
 
     useEffect(() => {
         if (inGame) {
@@ -27,18 +25,19 @@ const Main = ({inGame, logInGameHandler}) => {
             }, 2000);
         }
     }, [inGame])
+
     useEffect(() => {
         const socket = io('ws://localhost:5000');
-
-        socket.on('random_text_generated', (data) => {
-            setRandomText(data.random_text);
-        })
 
         socket.on('client_connected', (data) => {
             setCurrentUserId(data.client_id);
         })
 
-        socket.emit('get_random_text')
+        socket.emit('get_random_text');
+
+        socket.on('random_text_generated', data => {
+            setRndText(data.text)
+        });
 
         return (() => {
             socket.disconnect()
