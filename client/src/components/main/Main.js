@@ -10,6 +10,7 @@ const Main = ({inGame, logInGameHandler}) => {
     const [popUpText, setPopUpText] = useState('');
     const [currentUserId, setCurrentUserId] = useState('You will appear here');
     const [randomText, setRandomText] = useState('');
+    const [inputActive, setInputActive] = useState('');
 
     useEffect(() => {
         if (inGame) {
@@ -46,18 +47,20 @@ const Main = ({inGame, logInGameHandler}) => {
 
     const [usersInput, setUsersInput] = useState('');
 
+    const handleUserInput = (e) => {
+        console.log(e.key)
+    }
+
     return inGame ?
         (
             <main className={'main'}>
                 <div className="main__car_display"></div>
-                <div className="main__random_text_container">
+                <div className={`main__random_text_container ${inputActive}`}>
                     {rndText}
-                    <div className="main__users_input_container">
+                    <div className={`main__users_input_container`}>
                         {usersInput}
                     </div>
-                    <textarea onChange={e => {
-                        setUsersInput(e.target.value);
-                    }} name="textarea" className={'main__textarea_hidden'}></textarea>
+                    <textarea onBlur={() => setInputActive('')} onFocus={() => setInputActive('active')} onKeyDown={handleUserInput} name="textarea" className={'main__textarea_hidden'}></textarea>
                 </div>
                 <div className={`popUp ${popUpVisible}`}>
                     {popUpText}
