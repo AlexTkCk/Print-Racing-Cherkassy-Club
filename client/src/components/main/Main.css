@@ -41,7 +41,7 @@
 }
 
 .popUp {
-    border: 1px solid darkblue;
+    border: 1px solid #010148;
     padding: 10px 15px;
     display: flex;
     align-items: center;
@@ -63,3 +63,90 @@
 .popUp_active {
     opacity: 100;
 }
+
+.main__log_in_container {
+    border-radius: 5px;
+    border: 1px solid #010148;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: black;
+    color: white;
+}
+
+.main__log_in_container * {
+    margin-block: 10px;
+}
+
+.log_in__input_button {
+    color: white;
+    border: 2px solid gray;
+    cursor: pointer;
+    border-radius: 5px;
+    height: fit-content;
+    width: fit-content;
+    padding: 5px 10px;
+    font-size: 20px;
+    background: none;
+    transition: 0.2s ease-in;
+}
+
+.log_in__input_button:hover {
+    background: white;
+    box-shadow: 2px 2px 1px white;
+    color: black;
+    border: 2px solid black;
+    transform: translate(-2px, -2px);
+}
+
+.log_in__input_button:active {
+    box-shadow: none;
+    transform: translate(4px, 4px);
+}
+
+.log_in__input {
+    width: 90%;
+    height: 40px;
+    font-size: 25px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.title__description_hover {
+    border-radius: 5px;
+    border: 1px solid white;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.log_in__title {
+    display: flex;
+    align-items: center;
+}
+
+.ID_description__container {
+    position: absolute;
+    opacity: 0;
+    transition: 0.3s ease-in-out;
+    bottom: 100%;
+    width: 250px;
+    height: fit-content;
+    pointer-events: none;
+    border: 1px solid black;
+    background: white;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.title__description_hover {
+    margin-left: 10px;
+    position: relative;
+}
+
+.title__description_hover:hover .ID_description__container {
+    opacity: 100;
+}
+
