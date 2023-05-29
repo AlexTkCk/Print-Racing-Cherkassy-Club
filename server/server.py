@@ -37,5 +37,6 @@ def handle_disconnect():
 def handle_get_random_text():
     random_text = generate_random_text()
     emit('random_text_generated', {'text': random_text})
-if __name__ == 'main':
+
+if __name__ == '__main__':
     socketio.run(app, port=5000)
