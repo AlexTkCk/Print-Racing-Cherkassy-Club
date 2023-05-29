@@ -1,22 +1,17 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
-import openai
-
-openai.api_key = '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'
+from random_word import RandomWords
 
 def generate_random_text():
-    prompt = "Once upon a time"
-    response = openai.Completion.create(
-        engine='text-davinci-003',
-        prompt=prompt,
-        max_tokens=50,
-        temperature=0.7
-    )
-    generated_text = response.choices[0].text.strip()
+    rw = RandomWords()
+    generated_text = []
+    for i in range(10):
+        generated_text.append(rw.get_random_word())
+
     return generated_text
 
 
-app = Flask(__name__)
+app = Flask(name)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 connected_clients = set()
@@ -36,7 +31,7 @@ def handle_disconnect():
 @socketio.on('get_random_text')
 def handle_get_random_text():
     random_text = generate_random_text()
-    emit('random_text_generated', {'text': random_text})
+    emit('random_text_generated', {'text': ' '.join(random_text)})
 
-if __name__ == '__main__':
+if name == 'main':
     socketio.run(app, port=5000)
