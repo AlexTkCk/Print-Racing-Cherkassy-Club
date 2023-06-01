@@ -15,11 +15,23 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 connected_clients = set()
+@socketio.on('connect_to_client')
+def handle_connect_to_client(data):
+    client_id = data['client_id']
+    join_room(client_id)  #
+    emit('connected_to_client', {'client_id': client_id})
+
+@socketio.on('disconnect_from_client')
+def handle_disconnect_from_client(data):
+    client_id = data['client_id']
+    leave_room(client_id)
+    emit('disconnected_from_client', {'client_id': client_id})
 
 @socketio.on('connect')
 def handle_connect():
     client_id = request.sid
     connected_clients.add(client_id)
+    join_room(client_id)
     emit('client_connected', {'client_id': client_id})
 
 @socketio.on('disconnect')
