@@ -16,7 +16,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_clients = set()
 rooms_data = {}
-rooms = []
+rooms = {}
 
 @socketio.on('connect_to_client')
 def handle_connect_to_client(data):
@@ -39,17 +39,21 @@ def handle_request_accepted(data):
             'client_1': user_is_connecting,
             'client_2': user_connected_to,
             'timer': 30,
-            'text': generate_random_text()
+            'text': generate_random_text(),
+            'client_1_position': 0,
+            'client_2_position': 0,
+            'roomID': user_connected_to
     }
 
     emit('connecting_successful', room, to=user_is_connecting)
     emit('connecting_successful', room, to=user_connected_to)
+    rooms[user_connected_to] = room
 
-    while room['timer'] > 0:
+    while rooms[user_connected_to]['timer'] > 0:
             time.sleep(1)
-            room['timer'] -= 1
-            emit('timer_update', room['timer'], to=room['client_1'])
-            emit('timer_update', room['timer'], to=room['client_2'])
+            rooms[user_connected_to]['timer'] -= 1
+            emit('timer_update', room['timer'], to=rooms[user_connected_to]['client_1'])
+            emit('timer_update', room['timer'], to=rooms[user_connected_to]['client_2'])
 
 
 @socketio.on('disconnect_from_client')
@@ -82,19 +86,26 @@ def handle_disconnect():
 
 @socketio.on('check_text')
 def handle_check_text(data):
-    room = data['room']
-    entered_text = data['text']
-    generated_text = rooms_data.get(room)
+    print(data)
+    room = rooms[data['room']]
+    key = data['key']
+    generated_text = ' '.join(data['text'])
+    client_id = request.sid
 
-    if generated_text is None:
-        return emit('check_text_result', {'status': 400})
+    if client_id == room['client_1']:
+        if key == generated_text[rooms[room]['client_1_position']]:
+            emit('key_valid', {'key': key}, to=client_id)
+        else :
+            emit('key_wrong', {'key': key}, to=client_id)
+        rooms[room]['client_1_position'] += 1
+    else :
+        if key == generated_text[rooms[room]['client_2_position']]:
+            emit('key_valid', {'key': key}, to=client_id)
+        else :
+            emit('key_wrong', {'key': key}, to=client_id)
+        rooms[room]['client_2_position'] += 1
 
-    if len(entered_text) != len(generated_text):
-        return emit('check_text_result', {'status': 400})
 
-    for entered_char, generated_char in zip(entered_text, generated_text):
-        if entered_char != generated_char:
-            return emit('check_text_result', {'status': 400})
 
     return emit('check_text_result', {'status': 200})
 
