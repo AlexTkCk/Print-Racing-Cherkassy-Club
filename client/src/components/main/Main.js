@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './Main.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import {socket} from '../../socket'
 
@@ -8,30 +11,20 @@ const Main = () => {
     const [popUpText, setPopUpText] = useState('');
     const [currentUserId, setCurrentUserId] = useState('Your id will appear here');
     const [inputActive, setInputActive] = useState('');
-    const [rndText, setRndText] = useState('Text soon');
     const [inGame, setInGame] = useState(false);
     const [connectID, setConnectID] = useState('');
+    const [roomData, setRoomData] = useState({});
+    const [gameRequests, setGameRequests] = useState([]);
 
     const logInGameHandler = (e) => {
         socket.emit('connect_to_client', {
             connectID: e.target.value,
         })
-        // setInGame(true);
     }
 
     useEffect(() => {
         if (inGame) {
-            setPopUpVisible('popUp_active');
-            setPopUpText(
-                <>
-                    <h1 className={'popup__title'}>Welcome !</h1>
-                    <h2 className={'popUp__subTitle'}>{currentUserId}</h2>
-                </>
-            );
 
-            setTimeout(() => {
-                setPopUpVisible('');
-            }, 2000);
         }
     }, [inGame])
 
@@ -41,7 +34,24 @@ const Main = () => {
         })
 
         socket.on('connecting_successful', data => {
-            console.log(data)
+            setRoomData(data);
+        })
+
+        socket.on('connecting_unsuccessful', () => {
+            setPopUpVisible('popUp_active');
+            setPopUpText(
+                <>
+                    <h1 className={'popup__title'}>Error !</h1>
+                    <h2 className={'popUp__subTitle'}>User is not exist, or declined.</h2>
+                </>
+            );
+            setTimeout(() => {
+                setPopUpVisible('');
+            }, 2000);
+        })
+
+        socket.on('new_game_request', data => {
+            setGameRequests(prevState => [...prevState, data])
         })
 
         socket.on('timer_update', data => {
@@ -62,15 +72,13 @@ const Main = () => {
             <main className={'main'}>
                 <div className="main__car_display"></div>
                 <div className={`main__random_text_container ${inputActive}`}>
-                    {rndText}
+                    {roomData.text}
                     <div className={`main__users_input_container`}>
                         {usersInput}
                     </div>
                     <textarea onBlur={() => setInputActive('')} onFocus={() => setInputActive('active')} onKeyDown={handleUserInput} name="textarea" className={'main__textarea_hidden'}></textarea>
                 </div>
-                <div className={`popUp ${popUpVisible}`}>
-                    {popUpText}
-                </div>
+
             </main>
         )
         :
@@ -97,7 +105,25 @@ const Main = () => {
 
                     <button className="log_in__input_button" onClick={logInGameHandler} value={connectID}>Log in -></button>
                 </div>
+                <div className={`popUp ${popUpVisible}`}>
+                    {popUpText}
+                </div>
 
+                <div className="requests_container">
+                    {gameRequests.map((request, index)=> {
+                            return (<div key={index} className={'request'}>
+                                <h1 className={'request_title'}>{request.id} challenges you!</h1>
+                                <div className="request__buttons_container">
+                                    <button className="request__choice_button button_accept">
+                                        <FontAwesomeIcon icon={faCheck} /> Accept</button>
+                                    <button className="request__choice_button button_decline">
+                                        <FontAwesomeIcon icon={faCircleXmark} />  Decline
+                                    </button>
+                                </div>
+                            </div> )
+                        })
+                    }
+                </div>
             </main>
         );
 };
