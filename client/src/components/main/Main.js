@@ -24,12 +24,6 @@ const Main = () => {
     }
 
     useEffect(() => {
-        if (inGame) {
-
-        }
-    }, [inGame])
-
-    useEffect(() => {
         socket.on('client_connected', (data) => {
             setCurrentUserId(data.client_id);
         })
@@ -59,7 +53,21 @@ const Main = () => {
         })
 
         socket.on('timer_update', data => {
-            console.log(data)
+            setRoomData(prevState => {
+                return {...prevState, timer: data}
+            })
+        })
+
+        socket.on('key_valid', data => {
+            setUsersInput(prevState => {
+                return prevState + <span className={'key_valid'}>{data.key}</span>
+            })
+        })
+
+        socket.on('key_wrong', data => {
+            setUsersInput(prevState => {
+                return prevState + <span className={'key_wrong'}>{data.key}</span>
+            })
         })
 
         return socket.disconnect;
@@ -68,13 +76,19 @@ const Main = () => {
     const [usersInput, setUsersInput] = useState('');
 
     const handleUserInput = (e) => {
-        console.log(e.key)
+        socket.emit('check_text', {
+            room: roomData['roomID'],
+            key: e.key,
+            text: roomData['text']
+        })
     }
 
     return inGame ?
         (
             <main className={'main'}>
-                <div className="main__car_display"></div>
+                <div className="main__car_display">
+                    <h1 className="display__timer">{roomData['timer']}</h1>
+                </div>
                 <div className={`main__random_text_container ${inputActive}`}>
                     {roomData.text}
                     <div className={`main__users_input_container`}>
