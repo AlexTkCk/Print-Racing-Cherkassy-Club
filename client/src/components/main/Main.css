@@ -220,3 +220,11 @@
 .request__choice_button:hover {
     border: 2px solid black;
 }
+
+.key_valid {
+    color: #b0b001;
+}
+
+.key_wrong {
+    color: #a90404;
+}
