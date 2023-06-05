@@ -22,6 +22,12 @@ rooms = []
 def handle_connect_to_client(data):
     user_is_connecting = request.sid
     user_connected_to = data['connectID']
+    if user_connected_to not in connected_clients:
+        emit('connecting_unsuccessful')
+        return
+
+    emit('new_game_request', {'id': user_is_connecting}, to=user_connected_to)
+
     room = {
         'client_1': user_is_connecting,
         'client_2': user_connected_to,
