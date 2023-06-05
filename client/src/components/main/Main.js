@@ -1,14 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import './Main.css'
-import { io } from 'socket.io-client';
 
-const Main = ({inGame, logInGameHandler}) => {
+import {socket} from '../../socket'
 
+const Main = () => {
     const [popUpVisible, setPopUpVisible] = useState('');
     const [popUpText, setPopUpText] = useState('');
-    const [currentUserId, setCurrentUserId] = useState('You will appear here');
+    const [currentUserId, setCurrentUserId] = useState('Your id will appear here');
     const [inputActive, setInputActive] = useState('');
     const [rndText, setRndText] = useState('Text soon');
+    const [inGame, setInGame] = useState(false);
+    const [connectID, setConnectID] = useState('');
+
+    const logInGameHandler = (e) => {
+        socket.emit('connect_to_client', {
+            connectID: e.target.value,
+        })
+        setInGame(true);
+    }
 
     useEffect(() => {
         if (inGame) {
@@ -27,8 +36,6 @@ const Main = ({inGame, logInGameHandler}) => {
     }, [inGame])
 
     useEffect(() => {
-        const socket = io('ws://localhost:5000');
-
         socket.on('client_connected', (data) => {
             setCurrentUserId(data.client_id);
         })
@@ -39,10 +46,8 @@ const Main = ({inGame, logInGameHandler}) => {
             setRndText(data.text)
         });
 
-        return (() => {
-            socket.disconnect()
-        })
-    }, [])
+        return socket.disconnect;
+    }, [socket])
 
     const [usersInput, setUsersInput] = useState('');
 
@@ -86,9 +91,9 @@ const Main = ({inGame, logInGameHandler}) => {
                         {currentUserId}
                     </h2>
 
-                    <input type="text" className="log_in__input" placeholder={'Input room ID'}/>
+                    <input type="text" className="log_in__input" placeholder={'Input room ID'} onChange={(e) => setConnectID(e.target.value)}/>
 
-                    <button className="log_in__input_button" onClick={logInGameHandler}>Log in -></button>
+                    <button className="log_in__input_button" onClick={logInGameHandler} value={connectID}>Log in -></button>
                 </div>
 
             </main>
