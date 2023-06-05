@@ -16,7 +16,7 @@ const Main = () => {
         socket.emit('connect_to_client', {
             connectID: e.target.value,
         })
-        setInGame(true);
+        // setInGame(true);
     }
 
     useEffect(() => {
@@ -40,11 +40,13 @@ const Main = () => {
             setCurrentUserId(data.client_id);
         })
 
-        socket.emit('get_random_text');
+        socket.on('connecting_successful', data => {
+            console.log(data)
+        })
 
-        socket.on('random_text_generated', data => {
-            setRndText(data.text)
-        });
+        socket.on('timer_update', data => {
+            console.log(data)
+        })
 
         return socket.disconnect;
     }, [socket])
