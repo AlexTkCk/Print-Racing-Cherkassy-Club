@@ -15,6 +15,7 @@ const Main = () => {
     const [connectID, setConnectID] = useState('');
     const [roomData, setRoomData] = useState({});
     const [gameRequests, setGameRequests] = useState([]);
+    const [connectingTo, setConnectingTo] = useState('');
 
     const logInGameHandler = (e) => {
         socket.emit('connect_to_client', {
@@ -35,6 +36,8 @@ const Main = () => {
 
         socket.on('connecting_successful', data => {
             setRoomData(data);
+            setInGame(true);
+            console.log(data)
         })
 
         socket.on('connecting_unsuccessful', () => {
@@ -42,7 +45,7 @@ const Main = () => {
             setPopUpText(
                 <>
                     <h1 className={'popup__title'}>Error !</h1>
-                    <h2 className={'popUp__subTitle'}>User is not exist, or declined.</h2>
+                    <h2 className={'popUp__subTitle'}>User is not exist.</h2>
                 </>
             );
             setTimeout(() => {
@@ -51,7 +54,8 @@ const Main = () => {
         })
 
         socket.on('new_game_request', data => {
-            setGameRequests(prevState => [...prevState, data])
+            setGameRequests(prevState => [...prevState, data]);
+            setConnectingTo(data['id']);
         })
 
         socket.on('timer_update', data => {
@@ -105,24 +109,38 @@ const Main = () => {
 
                     <button className="log_in__input_button" onClick={logInGameHandler} value={connectID}>Log in -></button>
                 </div>
-                <div className={`popUp ${popUpVisible}`}>
-                    {popUpText}
-                </div>
 
                 <div className="requests_container">
                     {gameRequests.map((request, index)=> {
                             return (<div key={index} className={'request'}>
                                 <h1 className={'request_title'}>{request.id} challenges you!</h1>
                                 <div className="request__buttons_container">
-                                    <button className="request__choice_button button_accept">
+                                    <button className="request__choice_button button_accept" onClick={
+                                        () => {
+                                            socket.emit('request_accepted', {
+                                                connectID: connectingTo,
+                                            })
+
+                                        }
+                                    }>
                                         <FontAwesomeIcon icon={faCheck} /> Accept</button>
-                                    <button className="request__choice_button button_decline">
+                                    <button className="request__choice_button button_decline" onClick={
+                                        () => {
+                                            socket.emit('request_declined', {
+                                                connectID: connectingTo,
+                                            })
+                                            setGameRequests(prevState => [...prevState.slice(0, index), ...prevState.slice(index+1)]);
+                                        }
+                                    }>
                                         <FontAwesomeIcon icon={faCircleXmark} />  Decline
                                     </button>
                                 </div>
                             </div> )
                         })
                     }
+                </div>
+                <div className={`popUp ${popUpVisible}`}>
+                    {popUpText}
                 </div>
             </main>
         );
