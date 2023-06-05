@@ -28,11 +28,18 @@ def handle_connect_to_client(data):
 
     emit('new_game_request', {'id': user_is_connecting}, to=user_connected_to)
 
+
+
+@socketio.on('request_accepted')
+def handle_request_accepted(data):
+    user_is_connecting = request.sid
+    user_connected_to = data['connectID']
+
     room = {
-        'client_1': user_is_connecting,
-        'client_2': user_connected_to,
-        'timer': 30,
-        'text': generate_random_text()
+            'client_1': user_is_connecting,
+            'client_2': user_connected_to,
+            'timer': 30,
+            'text': generate_random_text()
     }
 
     emit('connecting_successful', room, to=user_is_connecting)
