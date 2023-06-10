@@ -86,28 +86,24 @@ def handle_disconnect():
 
 @socketio.on('check_text')
 def handle_check_text(data):
-    print(data)
     room = rooms[data['room']]
     key = data['key']
     generated_text = ' '.join(data['text'])
     client_id = request.sid
 
     if client_id == room['client_1']:
-        if key == generated_text[rooms[room]['client_1_position']]:
+        if key == generated_text[room['client_1_position']]:
             emit('key_valid', {'key': key}, to=client_id)
         else :
             emit('key_wrong', {'key': key}, to=client_id)
-        rooms[room]['client_1_position'] += 1
+        room['client_1_position'] += 1
     else :
-        if key == generated_text[rooms[room]['client_2_position']]:
+        if key == generated_text[room['client_2_position']]:
             emit('key_valid', {'key': key}, to=client_id)
         else :
             emit('key_wrong', {'key': key}, to=client_id)
-        rooms[room]['client_2_position'] += 1
+        room['client_2_position'] += 1
 
-
-
-    return emit('check_text_result', {'status': 200})
 
 
 if __name__ == '__main__':

@@ -16,6 +16,8 @@ const Main = () => {
     const [roomData, setRoomData] = useState({});
     const [gameRequests, setGameRequests] = useState([]);
     const [connectingTo, setConnectingTo] = useState('');
+    const [usersInput, setUsersInput] = useState([]);
+
 
     const logInGameHandler = (e) => {
         socket.emit('connect_to_client', {
@@ -31,7 +33,6 @@ const Main = () => {
         socket.on('connecting_successful', data => {
             setRoomData(data);
             setInGame(true);
-            console.log(data)
         })
 
         socket.on('connecting_unsuccessful', () => {
@@ -60,22 +61,24 @@ const Main = () => {
 
         socket.on('key_valid', data => {
             setUsersInput(prevState => {
-                return prevState + <span className={'key_valid'}>{data.key}</span>
+                return [...prevState, {key: data.key, class: 'key_valid'}]
             })
         })
 
         socket.on('key_wrong', data => {
             setUsersInput(prevState => {
-                return prevState + <span className={'key_wrong'}>{data.key}</span>
+                return [...prevState, {key: data.key, class: 'key_wrong'}]
             })
         })
 
         return socket.disconnect;
     }, [socket])
 
-    const [usersInput, setUsersInput] = useState('');
 
     const handleUserInput = (e) => {
+        if (e.key === 'Backspace')
+            return
+
         socket.emit('check_text', {
             room: roomData['roomID'],
             key: e.key,
@@ -90,9 +93,11 @@ const Main = () => {
                     <h1 className="display__timer">{roomData['timer']}</h1>
                 </div>
                 <div className={`main__random_text_container ${inputActive}`}>
-                    {roomData.text}
+                    {roomData.text.join(" ")}
                     <div className={`main__users_input_container`}>
-                        {usersInput}
+                        {usersInput.map((char, index) => {
+                            return <span key={index} className={char.class}>{char.key}</span>
+                        })}
                     </div>
                     <textarea onBlur={() => setInputActive('')} onFocus={() => setInputActive('active')} onKeyDown={handleUserInput} name="textarea" className={'main__textarea_hidden'}></textarea>
                 </div>
