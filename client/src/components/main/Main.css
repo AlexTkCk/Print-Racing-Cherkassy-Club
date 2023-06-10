@@ -228,3 +228,7 @@
 .key_wrong {
     color: #a90404;
 }
+
+.display__timer {
+    font-size: 60px;
+}
