@@ -232,3 +232,43 @@
 .display__timer {
     font-size: 60px;
 }
+
+.split_screen_container {
+    border: 1px solid black;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.main__car_display {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.player_screen {
+    flex: 1;
+    border-bottom: 2px solid black;
+    height: 90%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.player_car {
+    font-size: 50px;
+    padding-left: 10px;
+}
+
+.split_screen_container:before {
+    content: '';
+    width: 2px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    height: 100%;
+}

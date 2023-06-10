@@ -3,6 +3,7 @@ import './Main.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCarSide } from '@fortawesome/free-solid-svg-icons'
 
 import {socket} from '../../socket'
 
@@ -91,6 +92,14 @@ const Main = () => {
             <main className={'main'}>
                 <div className="main__car_display">
                     <h1 className="display__timer">{roomData['timer']}</h1>
+                    <div className="split_screen_container">
+                        <div className="player_screen">
+                            <FontAwesomeIcon className={'player_car'} icon={faCarSide}></FontAwesomeIcon>
+                        </div>
+                        <div className="player_screen">
+                            <FontAwesomeIcon className={'player_car'} icon={faCarSide}></FontAwesomeIcon>
+                        </div>
+                    </div>
                 </div>
                 <div className={`main__random_text_container ${inputActive}`}>
                     {roomData.text.join(" ")}
@@ -110,7 +119,7 @@ const Main = () => {
 
                 <div className="main__log_in_container">
                     <h1 className="log_in__title">
-                       Your unique
+                        Your unique
                         <div className={'title__description_hover'}>
                             <div className="ID_description__container">
                                 <p className="description_container__text">
@@ -131,31 +140,31 @@ const Main = () => {
 
                 <div className="requests_container">
                     {gameRequests.map((request, index)=> {
-                            return (<div key={index} className={'request'}>
-                                <h1 className={'request_title'}>{request.id} challenges you!</h1>
-                                <div className="request__buttons_container">
-                                    <button className="request__choice_button button_accept" onClick={
-                                        () => {
-                                            socket.emit('request_accepted', {
-                                                connectID: connectingTo,
-                                            })
+                        return (<div key={index} className={'request'}>
+                            <h1 className={'request_title'}>{request.id} challenges you!</h1>
+                            <div className="request__buttons_container">
+                                <button className="request__choice_button button_accept" onClick={
+                                    () => {
+                                        socket.emit('request_accepted', {
+                                            connectID: connectingTo,
+                                        })
 
-                                        }
-                                    }>
-                                        <FontAwesomeIcon icon={faCheck} /> Accept</button>
-                                    <button className="request__choice_button button_decline" onClick={
-                                        () => {
-                                            socket.emit('request_declined', {
-                                                connectID: connectingTo,
-                                            })
-                                            setGameRequests(prevState => [...prevState.slice(0, index), ...prevState.slice(index+1)]);
-                                        }
-                                    }>
-                                        <FontAwesomeIcon icon={faCircleXmark} />  Decline
-                                    </button>
-                                </div>
-                            </div> )
-                        })
+                                    }
+                                }>
+                                    <FontAwesomeIcon icon={faCheck} /> Accept</button>
+                                <button className="request__choice_button button_decline" onClick={
+                                    () => {
+                                        socket.emit('request_declined', {
+                                            connectID: connectingTo,
+                                        })
+                                        setGameRequests(prevState => [...prevState.slice(0, index), ...prevState.slice(index+1)]);
+                                    }
+                                }>
+                                    <FontAwesomeIcon icon={faCircleXmark} />  Decline
+                                </button>
+                            </div>
+                        </div> )
+                    })
                     }
                 </div>
                 <div className={`popUp ${popUpVisible}`}>
