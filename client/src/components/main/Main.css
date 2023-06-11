@@ -8,23 +8,27 @@
 }
 
 .main__random_text_container {
-    height: fit-content;
+    height: 85px;
     width: 70%;
     border: 1px solid black;
     font-size: 70px;
     white-space: nowrap;
-    overflow-x: hidden;
-    padding: 5px 10px;
     background: #000000;
     -webkit-text-stroke: 1px #ffffff;
     color: transparent;
     position: relative;
     opacity: 30%;
+    overflow: hidden;
 }
-
 
 .main__random_text_container.active {
     opacity: 100%;
+}
+
+.random_text {
+    position: absolute;
+    top: 0;
+    transition: 0.3s ease-in-out;
 }
 
 
@@ -41,12 +45,13 @@
 .main__users_input_container {
     position: absolute;
     top: 0;
-    left: 0;
     height: 100%;
-    width: 100%;
+    width: fit-content;
     font-size: 70px;
-    padding: 5px 10px;
     opacity: inherit;
+    overflow: hidden;
+    transition: 0.3s ease-in-out;
+
 }
 
 .popUp {
