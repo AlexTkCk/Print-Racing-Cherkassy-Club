@@ -23,7 +23,8 @@ const Main = () => {
     const car1Ref = useRef(null);
     const car2Ref = useRef(null);
     const [clipBoardText, setClipBoardText] = useState('');
-
+    const randomTextRef = useRef(null);
+    const userInputRef = useRef(null);
 
     const logInGameHandler = (e) => {
         socket.emit('connect_to_client', {
@@ -57,8 +58,8 @@ const Main = () => {
         })
 
         socket.on('timer_update', data => {
-            if (data === 0)
-                setInGame(false);
+            // if (data === 0)
+            //     setInGame(false);
             setRoomData(prevState => {
                 return {...prevState, timer: data}
             })
@@ -66,20 +67,23 @@ const Main = () => {
                 car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) - 10}px`;
             if (parseInt(car2Ref.current.style.paddingLeft) > 10)
                 car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) - 10}px`;
+
         })
 
         socket.on('key_valid', data => {
-            console.log(data['id'], currentUserId)
             if (data['id'] === currentUserId) {
                 setUsersInput(prevState => {
                     return [...prevState, {key: data.key, class: 'key_valid'}]
                 })
                 if (parseInt(car1Ref.current.style.paddingLeft) < 200)
                     car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) + 15}px`;
+                randomTextRef.current.style.left = `${parseInt(randomTextRef.current.style.left)-35}px`
+                userInputRef.current.style.left = `${parseInt(userInputRef.current.style.left)-35}px`
             }
             else
                 if (parseInt(car2Ref.current.style.paddingLeft) < 200)
                     car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) + 15}px`;
+
         })
 
         socket.on('key_wrong', data => {
@@ -87,6 +91,8 @@ const Main = () => {
                 setUsersInput(prevState => {
                     return [...prevState, {key: data.key, class: 'key_wrong'}]
                 })
+                randomTextRef.current.style.left = `${parseInt(randomTextRef.current.style.left)-35}px`
+                userInputRef.current.style.left = `${parseInt(userInputRef.current.style.left)-35}px`
             }
         })
 
@@ -119,18 +125,20 @@ const Main = () => {
                     <h1 className="display__timer">{roomData['timer']}</h1>
                     <div className="split_screen_container">
                         <div className="player_screen">
-                            <FontAwesomeIcon ref={car1Ref} style={{paddingLeft: '10px'}} className={'player_car'}
+                            <FontAwesomeIcon ref={car1Ref} style={{paddingLeft: '0px'}} className={'player_car'}
                                              icon={faCarSide}></FontAwesomeIcon>
                         </div>
                         <div className="player_screen">
-                            <FontAwesomeIcon ref={car2Ref} style={{paddingLeft: '10px'}} className={'player_car'}
+                            <FontAwesomeIcon ref={car2Ref} style={{paddingLeft: '0px'}} className={'player_car'}
                                              icon={faCarSide}></FontAwesomeIcon>
                         </div>
                     </div>
                 </div>
                 <div className={`main__random_text_container ${inputActive}`}>
-                    {roomData.text.join(" ")}
-                    <div className={`main__users_input_container`}>
+                    <div ref={randomTextRef} style={{left: '0px'}} className={"random_text"}>
+                        {roomData.text.join(" ")}
+                    </div>
+                    <div ref={userInputRef} style={{left: '0px'}} className={`main__users_input_container`}>
                         {usersInput.map((char, index) => {
                             return <span key={index} className={char.class}>{char.key}</span>
                         })}
