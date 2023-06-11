@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import './Main.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -18,6 +18,8 @@ const Main = () => {
     const [gameRequests, setGameRequests] = useState([]);
     const [connectingTo, setConnectingTo] = useState('');
     const [usersInput, setUsersInput] = useState([]);
+    const car1Ref = useRef(null);
+    const car2Ref = useRef(null);
 
 
     const logInGameHandler = (e) => {
@@ -58,12 +60,14 @@ const Main = () => {
             setRoomData(prevState => {
                 return {...prevState, timer: data}
             })
+            car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft)-10}px`;
         })
 
         socket.on('key_valid', data => {
             setUsersInput(prevState => {
                 return [...prevState, {key: data.key, class: 'key_valid'}]
             })
+            car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft)+15}px`;
         })
 
         socket.on('key_wrong', data => {
@@ -74,7 +78,6 @@ const Main = () => {
 
         return socket.disconnect;
     }, [socket])
-
 
     const handleUserInput = (e) => {
         if (e.key === 'Backspace')
@@ -94,10 +97,10 @@ const Main = () => {
                     <h1 className="display__timer">{roomData['timer']}</h1>
                     <div className="split_screen_container">
                         <div className="player_screen">
-                            <FontAwesomeIcon className={'player_car'} icon={faCarSide}></FontAwesomeIcon>
+                            <FontAwesomeIcon ref={car1Ref} style={{paddingLeft: '10px'}} className={'player_car'} icon={faCarSide}></FontAwesomeIcon>
                         </div>
                         <div className="player_screen">
-                            <FontAwesomeIcon className={'player_car'} icon={faCarSide}></FontAwesomeIcon>
+                            <FontAwesomeIcon ref={car2Ref} style={{paddingLeft: '10px'}} className={'player_car'} icon={faCarSide}></FontAwesomeIcon>
                         </div>
                     </div>
                 </div>
