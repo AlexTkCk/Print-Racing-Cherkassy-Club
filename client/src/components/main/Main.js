@@ -7,12 +7,12 @@ import {faCarSide} from '@fortawesome/free-solid-svg-icons'
 import {faCopy} from '@fortawesome/free-solid-svg-icons'
 import {CopyToClipboard} from "react-copy-to-clipboard/src";
 
-import {socket} from '../../socket'
+import {socket, currentUserId} from '../../socket'
 
 const Main = () => {
     const [popUpVisible, setPopUpVisible] = useState('');
     const [popUpText, setPopUpText] = useState('');
-    const [currentUserId, setCurrentUserId] = useState('Your id will appear here');
+    // const [currentUserId, setCurrentUserId] = useState('Your id will appear here');
     const [inputActive, setInputActive] = useState('');
     const [inGame, setInGame] = useState(false);
     const [connectID, setConnectID] = useState('');
@@ -32,9 +32,6 @@ const Main = () => {
     }
 
     useEffect(() => {
-        socket.on('client_connected', (data) => {
-            setCurrentUserId(data.client_id);
-        })
 
         socket.on('connecting_successful', data => {
             setRoomData(data);
@@ -60,23 +57,37 @@ const Main = () => {
         })
 
         socket.on('timer_update', data => {
+            if (data === 0)
+                setInGame(false);
             setRoomData(prevState => {
                 return {...prevState, timer: data}
             })
-            car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) - 10}px`;
+            if (parseInt(car1Ref.current.style.paddingLeft) > 10)
+                car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) - 10}px`;
+            if (parseInt(car2Ref.current.style.paddingLeft) > 10)
+                car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) - 10}px`;
         })
 
         socket.on('key_valid', data => {
-            setUsersInput(prevState => {
-                return [...prevState, {key: data.key, class: 'key_valid'}]
-            })
-            car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) + 15}px`;
+            console.log(data['id'], currentUserId)
+            if (data['id'] === currentUserId) {
+                setUsersInput(prevState => {
+                    return [...prevState, {key: data.key, class: 'key_valid'}]
+                })
+                if (parseInt(car1Ref.current.style.paddingLeft) < 200)
+                    car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) + 15}px`;
+            }
+            else
+                if (parseInt(car2Ref.current.style.paddingLeft) < 200)
+                    car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) + 15}px`;
         })
 
         socket.on('key_wrong', data => {
-            setUsersInput(prevState => {
-                return [...prevState, {key: data.key, class: 'key_wrong'}]
-            })
+            if (data['id'] === currentUserId) {
+                setUsersInput(prevState => {
+                    return [...prevState, {key: data.key, class: 'key_wrong'}]
+                })
+            }
         })
 
         return socket.disconnect;
