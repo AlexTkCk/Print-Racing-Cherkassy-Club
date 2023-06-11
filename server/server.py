@@ -89,19 +89,25 @@ def handle_check_text(data):
     room = rooms[data['room']]
     key = data['key']
     generated_text = ' '.join(data['text'])
-    client_id = request.sid
+    client_1_id = room['client_1']
+    client_2_id = room['client_2']
+    request_id = request.sid
 
-    if client_id == room['client_1']:
+    if request_id == room['client_1']:
         if key == generated_text[room['client_1_position']]:
-            emit('key_valid', {'key': key}, to=client_id)
+            emit('key_valid', {'key': key, 'id': request_id}, to=client_1_id)
+            emit('key_valid', {'key': key, 'id': request_id}, to=client_2_id)
         else :
-            emit('key_wrong', {'key': key}, to=client_id)
+            emit('key_wrong', {'key': key, 'id': request_id}, to=client_1_id)
+            emit('key_wrong', {'key': key, 'id': request_id}, to=client_2_id)
         room['client_1_position'] += 1
     else :
         if key == generated_text[room['client_2_position']]:
-            emit('key_valid', {'key': key}, to=client_id)
+            emit('key_valid', {'key': key, 'id': request_id}, to=client_1_id)
+            emit('key_valid', {'key': key, 'id': request_id}, to=client_2_id)
         else :
-            emit('key_wrong', {'key': key}, to=client_id)
+            emit('key_wrong', {'key': key, 'id': request_id}, to=client_1_id)
+            emit('key_wrong', {'key': key, 'id': request_id}, to=client_2_id)
         room['client_2_position'] += 1
 
 
