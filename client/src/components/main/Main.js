@@ -80,9 +80,17 @@ const Main = () => {
     }, [socket])
 
     const handleUserInput = (e) => {
-        if (e.key === 'Backspace')
+        if (['Backspace',
+            'Shift',
+            'Alt',
+            'Control',
+            'Enter',
+            'Tab',
+            'Escape',
+            'CapsLock'].includes(e.key)) {
+            e.preventDefault();
             return
-
+        }
         socket.emit('check_text', {
             room: roomData['roomID'],
             key: e.key,
