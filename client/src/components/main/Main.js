@@ -24,6 +24,7 @@ const Main = () => {
     const [clipBoardText, setClipBoardText] = useState('');
     const randomTextRef = useRef(null);
     const userInputRef = useRef(null);
+    const [winPopUpVisibility, setWinPopUpVisibility] = useState('hidden');
 
     const logInGameHandler = (e) => {
         socket.emit('connect_to_client', {
@@ -93,7 +94,7 @@ const Main = () => {
         })
 
         socket.on('game_ended', data => {
-            console.log(data)
+            setWinPopUpVisibility('');
         })
 
         return socket.disconnect;
@@ -121,6 +122,11 @@ const Main = () => {
     return inGame ?
         (
             <main className={'main'}>
+                <div className={`main__win_overlay ${winPopUpVisibility}`}>
+                    <div className="main__win_popup">
+
+                    </div>
+                </div>
                 <div className="main__car_display">
                     <h1 className="display__timer">{roomData['timer']}</h1>
                     <div className="split_screen_container">
