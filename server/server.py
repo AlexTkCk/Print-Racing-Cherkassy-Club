@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit
 from random_word import RandomWords
+from flask_cors import CORS
 import time
 
 def generate_random_text():
@@ -13,9 +14,9 @@ def generate_random_text():
 
 
 app = Flask(__name__)
+CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_clients = set()
-rooms_data = {}
 rooms = {}
 
 @socketio.on('connect_to_client')
@@ -66,14 +67,8 @@ def handle_disconnect_from_client():
 @socketio.on('connect')
 def handle_connect():
     client_id = request.sid
-    room = client_id
     emit('client_connected', {'client_id': client_id})
     connected_clients.add(client_id)
-    join_room(room)
-    if room not in rooms_data:
-        rooms_data[room] = []  # Создание списка для каждой комнаты
-    text = generate_random_text()
-    rooms_data[room].append(text)
 
 
 @socketio.on('disconnect')
