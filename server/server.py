@@ -39,11 +39,13 @@ def handle_request_accepted(data):
     room = {
             'client_1': user_is_connecting,
             'client_2': user_connected_to,
-            'timer': 30,
+            'timer': 10,
             'text': generate_random_text(),
             'client_1_position': 0,
             'client_2_position': 0,
-            'roomID': user_connected_to
+            'roomID': user_connected_to,
+            'client_1_score': 0,
+            'client_2_score': 0
     }
 
     emit('connecting_successful', room, to=user_is_connecting)
@@ -55,6 +57,9 @@ def handle_request_accepted(data):
             rooms[user_connected_to]['timer'] -= 1
             emit('timer_update', room['timer'], to=rooms[user_connected_to]['client_1'])
             emit('timer_update', room['timer'], to=rooms[user_connected_to]['client_2'])
+
+    emit('game_ended', {'client_1_score': room['client_1_score'], 'client_2_score': room['client_2_score']}, to=room['client_1'])
+    emit('game_ended', {'client_1_score': room['client_1_score'], 'client_2_score': room['client_2_score']}, to=room['client_2'])
 
 
 @socketio.on('disconnect_from_client')
@@ -74,7 +79,6 @@ def handle_connect():
 def handle_disconnect():
     client_id = request.sid
     connected_clients.remove(client_id)
-    emit('client_disconnected', {'client_id': client_id}, broadcast=True)
 
 
 @socketio.on('check_text')
@@ -90,6 +94,7 @@ def handle_check_text(data):
         if key == generated_text[room['client_1_position']]:
             emit('key_valid', {'key': key, 'id': request_id}, to=client_1_id)
             emit('key_valid', {'key': key, 'id': request_id}, to=client_2_id)
+            room['client_1_score'] += 1
         else :
             emit('key_wrong', {'key': key, 'id': request_id}, to=client_1_id)
             emit('key_wrong', {'key': key, 'id': request_id}, to=client_2_id)
@@ -98,11 +103,11 @@ def handle_check_text(data):
         if key == generated_text[room['client_2_position']]:
             emit('key_valid', {'key': key, 'id': request_id}, to=client_1_id)
             emit('key_valid', {'key': key, 'id': request_id}, to=client_2_id)
+            room['client_2_score'] += 1
         else :
             emit('key_wrong', {'key': key, 'id': request_id}, to=client_1_id)
             emit('key_wrong', {'key': key, 'id': request_id}, to=client_2_id)
         room['client_2_position'] += 1
-
 
 
 if __name__ == '__main__':
