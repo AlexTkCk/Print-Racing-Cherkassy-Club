@@ -12,7 +12,6 @@ import {socket, currentUserId} from '../../socket'
 const Main = () => {
     const [popUpVisible, setPopUpVisible] = useState('');
     const [popUpText, setPopUpText] = useState('');
-    // const [currentUserId, setCurrentUserId] = useState('Your id will appear here');
     const [inputActive, setInputActive] = useState('');
     const [inGame, setInGame] = useState(false);
     const [connectID, setConnectID] = useState('');
@@ -33,7 +32,6 @@ const Main = () => {
     }
 
     useEffect(() => {
-
         socket.on('connecting_successful', data => {
             setRoomData(data);
             setInGame(true);
@@ -58,8 +56,6 @@ const Main = () => {
         })
 
         socket.on('timer_update', data => {
-            // if (data === 0)
-            //     setInGame(false);
             setRoomData(prevState => {
                 return {...prevState, timer: data}
             })
@@ -94,6 +90,10 @@ const Main = () => {
                 randomTextRef.current.style.left = `${parseInt(randomTextRef.current.style.left)-35}px`
                 userInputRef.current.style.left = `${parseInt(userInputRef.current.style.left)-35}px`
             }
+        })
+
+        socket.on('game_ended', data => {
+            console.log(data)
         })
 
         return socket.disconnect;
