@@ -63,6 +63,7 @@
     border-radius: 5px;
     transition: 0.3s ease-in;
     opacity: 0;
+    pointer-events: none;
 }
 
 .popUp__title {
@@ -133,6 +134,21 @@
 .log_in__title {
     display: flex;
     align-items: center;
+}
+
+.log_in__id_container {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.copy_to_clipboard__button {
+    font-size: 35px;
+    cursor: pointer;
+    border: 1px solid white;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 .ID_description__container {
