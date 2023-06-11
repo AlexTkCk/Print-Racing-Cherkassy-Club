@@ -60,7 +60,6 @@ def handle_request_accepted(data):
 @socketio.on('disconnect_from_client')
 def handle_disconnect_from_client():
     client_id = request.sid
-    leave_room(client_id)
     emit('disconnected_from_client', {'client_id': client_id})
 
 
@@ -75,7 +74,6 @@ def handle_connect():
 def handle_disconnect():
     client_id = request.sid
     connected_clients.remove(client_id)
-    leave_room(client_id)
     emit('client_disconnected', {'client_id': client_id}, broadcast=True)
 
 
@@ -108,4 +106,4 @@ def handle_check_text(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000)
