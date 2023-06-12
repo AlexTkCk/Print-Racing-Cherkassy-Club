@@ -101,5 +101,6 @@ def handle_check_text(data):
         room['client_2_position'] += 1
 
 
-if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000)
+if name == 'main':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
