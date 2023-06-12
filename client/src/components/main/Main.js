@@ -65,10 +65,10 @@ const Main = () => {
             })
 
 
-            if (parseInt(car1Ref.current.style.paddingLeft) > 10)
-                car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) - 10}px`;
+            if (parseInt(car1Ref.current.style.paddingLeft) > 2)
+                car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) - 1}%`;
             if (parseInt(car2Ref.current.style.paddingLeft) > 10)
-                car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) - 10}px`;
+                car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) - 1}%`;
 
         })
 
@@ -83,14 +83,14 @@ const Main = () => {
                 setUsersInput(prevState => {
                     return [...prevState, {key: data.key, class: 'key_valid'}]
                 })
-                if (parseInt(car1Ref.current.style.paddingLeft) < 200)
-                    car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) + 15}px`;
+                if (parseInt(car1Ref.current.style.paddingLeft) < 90)
+                    car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) + 2}%`;
                 randomTextRef.current.style.left = `${parseInt(randomTextRef.current.style.left)-35}px`
                 userInputRef.current.style.left = `${parseInt(userInputRef.current.style.left)-35}px`
             }
             else
-                if (parseInt(car2Ref.current.style.paddingLeft) < 200)
-                    car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) + 15}px`;
+            if (parseInt(car2Ref.current.style.paddingLeft) < 90)
+                car2Ref.current.style.paddingLeft = `${parseInt(car2Ref.current.style.paddingLeft) + 2}%`;
 
         })
 
@@ -208,16 +208,6 @@ const Main = () => {
                         <CopyToClipboard text={clipBoardText}>
                             <FontAwesomeIcon className={'copy_to_clipboard__button'}
                                              onClick={() => {
-                                                 setPopUpVisible('popUp_active');
-                                                 setPopUpText(
-                                                     <>
-                                                         <h1 className={'popup__title'}>Success!</h1>
-                                                         <h2 className={'popUp__subTitle'}>Your id was copied to clipboard.</h2>
-                                                     </>
-                                                 );
-                                                 setTimeout(() => {
-                                                     setPopUpVisible('');
-                                                 }, 2000);
                                                  setClipBoardText(currentUserId);
                                              }}
                                              icon={faCopy}>Copy</FontAwesomeIcon>
@@ -241,6 +231,16 @@ const Main = () => {
                                             connectID: connectingTo,
                                         })
                                         setGameRequests([]);
+                                        setPopUpVisible('popUp_active');
+                                        setPopUpText(
+                                            <>
+                                                <h1 className={'popup__title'}>Success!</h1>
+                                                <h2 className={'popUp__subTitle'}>Connection might take few seconds.</h2>
+                                            </>
+                                        );
+                                        setTimeout(() => {
+                                            setPopUpVisible('');
+                                        }, 2000);
                                     }
                                 }>
                                     <FontAwesomeIcon icon={faCheck}/> Accept
