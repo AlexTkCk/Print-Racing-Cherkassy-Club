@@ -40,7 +40,7 @@ def handle_request_accepted(data):
     room = {
             'client_1': user_is_connecting,
             'client_2': user_connected_to,
-            'timer': 10,
+            'timer': 30,
             'text': generate_random_text(),
             'client_1_position': 0,
             'client_2_position': 0,
