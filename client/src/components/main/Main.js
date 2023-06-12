@@ -5,6 +5,8 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons'
 import {faCircleXmark} from '@fortawesome/free-solid-svg-icons'
 import {faCarSide} from '@fortawesome/free-solid-svg-icons'
 import {faCopy} from '@fortawesome/free-solid-svg-icons'
+import {faCrown} from '@fortawesome/free-solid-svg-icons'
+import {faFlagCheckered} from '@fortawesome/free-solid-svg-icons'
 import {CopyToClipboard} from "react-copy-to-clipboard/src";
 
 import {socket, currentUserId} from '../../socket'
@@ -25,6 +27,7 @@ const Main = () => {
     const randomTextRef = useRef(null);
     const userInputRef = useRef(null);
     const [winPopUpVisibility, setWinPopUpVisibility] = useState('hidden');
+    const [scores, setScores] = useState({'client_1_score': 0, 'client_2_score': 0});
 
     const logInGameHandler = (e) => {
         socket.emit('connect_to_client', {
@@ -60,6 +63,8 @@ const Main = () => {
             setRoomData(prevState => {
                 return {...prevState, timer: data}
             })
+
+
             if (parseInt(car1Ref.current.style.paddingLeft) > 10)
                 car1Ref.current.style.paddingLeft = `${parseInt(car1Ref.current.style.paddingLeft) - 10}px`;
             if (parseInt(car2Ref.current.style.paddingLeft) > 10)
@@ -68,6 +73,12 @@ const Main = () => {
         })
 
         socket.on('key_valid', data => {
+            setScores(prevState => {
+                return {
+                    client_1_score: prevState['client_1_score'] + data['client_1_score'],
+                    client_2_score: prevState['client_2_score'] + data['client_2_score'],
+                }
+            })
             if (data['id'] === currentUserId) {
                 setUsersInput(prevState => {
                     return [...prevState, {key: data.key, class: 'key_valid'}]
@@ -96,8 +107,6 @@ const Main = () => {
         socket.on('game_ended', data => {
             setWinPopUpVisibility('');
         })
-
-        return socket.disconnect;
     }, [socket])
 
     const handleUserInput = (e) => {
@@ -122,11 +131,6 @@ const Main = () => {
     return inGame ?
         (
             <main className={'main'}>
-                <div className={`main__win_overlay ${winPopUpVisibility}`}>
-                    <div className="main__win_popup">
-
-                    </div>
-                </div>
                 <div className="main__car_display">
                     <h1 className="display__timer">{roomData['timer']}</h1>
                     <div className="split_screen_container">
@@ -153,7 +157,32 @@ const Main = () => {
                               onKeyDown={handleUserInput} name="textarea"
                               className={'main__textarea_hidden'}></textarea>
                 </div>
+                <div className={`main__win_container ${winPopUpVisibility}`}>
+                    <div className="main__win_overlay">
 
+                    </div>
+                    <div className="main__win_popup">
+                        <h1 className={'win_popup__title'}>FINISH! <FontAwesomeIcon icon={faFlagCheckered}></FontAwesomeIcon> </h1>
+                        <div className="scores_container">
+                            <h2>{roomData['client_1']}: {scores['client_1_score']} points.</h2>
+                            <h2>{roomData['client_2']}: {scores['client_2_score']} points.</h2>
+                        </div>
+
+                        <h1>Winner</h1>
+                        <FontAwesomeIcon className={'win__icon'} icon={faCrown}></FontAwesomeIcon>
+                        <h2>{scores['client_1_score'] > scores['client_2_score'] ?
+                            roomData['client_1']
+                            :
+                            roomData['client_2']}</h2>
+
+                        <button className={'win_popup__button'} onClick={() => {
+                            setInGame(false);
+                            setUsersInput([]);
+                            setWinPopUpVisibility('hidden');
+                            setScores({'client_1_score': 0, 'client_2_score': 0});
+                        }}>Go to pit stop -></button>
+                    </div>
+                </div>
             </main>
         )
         :
@@ -211,7 +240,7 @@ const Main = () => {
                                         socket.emit('request_accepted', {
                                             connectID: connectingTo,
                                         })
-
+                                        setGameRequests([]);
                                     }
                                 }>
                                     <FontAwesomeIcon icon={faCheck}/> Accept
